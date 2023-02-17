@@ -86,8 +86,8 @@
 }
 
 .article-left {
-	background-color: var(--selectColour);
-	color: var(--selectFontColour);
+	background-color: var(--selectFontColour);
+	color: var(--selectColour);
 	margin-left: 100px;
 	margin-right: 100px;
 	padding-left: 25px;
@@ -98,20 +98,6 @@
 	border-radius: 5px;
 	text-align: center;
 	float: right;
-}
-
-.article-left {
-	background-color: var(--selectColour);
-	color: var(--selectFontColour);
-	margin-left: 100px;
-	margin-right: 100px;
-	padding-left: 25px;
-	padding-right: 25px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	max-width: 800px;
-	border-radius: 5px;
-	text-align: center;
 }
 
 a:link {
@@ -137,6 +123,15 @@ a:active  {
 	color: var(--selectColour);
 	border: none;
 	font-size: 20px;
+}
+
+.download {
+	background-color: var(--selectColour);
+	color: var(--darkerColour);
+	border: none;
+	font-size: 20px;
+	border-radius: 5px;
+	border: none;
 }
 
 img {
