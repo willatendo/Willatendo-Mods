@@ -3,5 +3,5 @@
 	<modelVersion>4.0.0</modelVersion>     
 	<groupId>simplelibrary</groupId>
 	<artifactId>simplelibrary-neoforge</artifactId>
-	<version>3.4.0</version>
+	<version>3.4.1</version>
 </project>
