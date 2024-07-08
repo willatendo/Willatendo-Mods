@@ -3,9 +3,10 @@
 	<groupId>simplelibrary</groupId>
 	<artifactId>simplelibrary-neoforge</artifactId>
 	<versioning>
-		<latest>3.8.5</latest>
-		<release>3.8.5</release>
+		<latest>3.9.0</latest>
+		<release>3.9.0</release>
 		<versions>
+			<version>3.9.0</version>
 			<version>3.8.5</version>
 			<version>3.8.4</version>
 			<version>3.8.3</version>
