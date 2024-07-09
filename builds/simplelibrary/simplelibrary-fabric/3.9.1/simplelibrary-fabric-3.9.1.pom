@@ -3,5 +3,5 @@
 	<modelVersion>4.0.0</modelVersion>     
 	<groupId>simplelibrary</groupId>
 	<artifactId>simplelibrary-fabric</artifactId>
-	<version>3.9.0</version>
+	<version>3.9.1</version>
 </project>
