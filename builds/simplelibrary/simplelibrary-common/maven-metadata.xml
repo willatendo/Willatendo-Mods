@@ -3,9 +3,10 @@
 	<groupId>simplelibrary</groupId>
 	<artifactId>simplelibrary-common</artifactId>
 	<versioning>
-		<latest>3.15.1</latest>
-		<release>3.15.1</release>
+		<latest>3.16.0</latest>
+		<release>3.16.0</release>
 		<versions>
+			<version>3.16.0</version>
 			<version>3.15.1</version>
 			<version>3.15.0</version>
 			<version>3.14.0</version>
