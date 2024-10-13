@@ -1,5 +1,6 @@
 (function () {
-    let exportButton;
+    let exportModelButton;
+	let exportAnimationButton;
 	
 	Plugin.register("flf_exporter", {
 		title: "Fossil Legacy Format Exporter",
@@ -8,52 +9,72 @@
 		icon: "fa-cube",
 		version: "1.0.0",
 		variant: "both",
-		about: "This plugin exports your Blockbench entity models to be exported in flf model format.",
+		about: "This plugin exports your Blockbench entity models to be exported in flf model format and animations into fla.",
 		tags: ["Minecraft: Java Edition"],
 		onload() {
-			exportButton = new Action("export_flf", {
+			exportModelButton = new Action("export_flf", {
 				name: "Export to FLF",
 				description: "Exports entity models to FLF",
 				icon: "fa-file-export",
 				click() {
+					const fileName = Project.name.toLowerCase();
 					Blockbench.export({
 						type: "FLF Json",
 						extensions: ["json"],
 						savetype: "text",
-						content: autoStringify(generateFile())
+						name: `${fileName}.json`,
+						content: autoStringify(generateModelFile())
+					});
+				}
+			});
+			exportAnimationButton = new Action("export_fla", {
+				name: "Export to FLA",
+				description: "Exports animations to FLA format",
+				icon: "fa-file-export",
+				click() {
+					const animation = Animation.selected;
+					if (animation == null) return;
+					Blockbench.export({
+						type: "FLA Json",
+						extensions: ["json"],
+						savetype: "text",
+						name: `${animation.name.replaceAll(".", "_").replace("animation_", "").toLowerCase()}.json`,
+						content: autoStringify(generateAnimationFile(animation))
 					});
 				}
 			});
 			
-			MenuBar.addAction(exportButton, "file.export");
+			MenuBar.addAction(exportModelButton, "file.export");
+			MenuBar.addAction(exportAnimationButton, "file.export");
 		},
 		onunload() {
-			exportButton.delete();
+			exportModelButton.delete();
+			exportAnimationButton.delete();
 		}
 	});
 	
-	function generateFile() {
+	function generateModelFile() {
 		const result = {
 			elements: [],
 			model_id: Project.name.toLowerCase(),
 			texture_height: Project.texture_height,
 			texture_width: Project.texture_width
 		};
-		let all_groups = getAllGroups();
-		let loose_cubes = [];
+		let allGroups = getAllGroups();
+		let looseCubes = [];
 		Cube.all.forEach(cube => {
-			if (cube.parent == 'root') loose_cubes.push(cube)
+			if (cube.parent == 'root') looseCubes.push(cube)
 		})
-		if (loose_cubes.length) {
+		if (looseCubes.length) {
 			let group = new Group({
 				name: 'bb_main'
 			});
 			group.is_catch_bone = true;
 			group.createUniqueName()
-			all_groups.push(group)
-			group.children.replace(loose_cubes)
+			allGroups.push(group)
+			group.children.replace(looseCubes)
 		}
-		all_groups.slice().forEach(group => {
+		allGroups.slice().forEach(group => {
 			if(group.parent == "root") {
 				result.elements.push(generateElement(group));
 			}
@@ -108,5 +129,53 @@
 			}
 		}
 		return element;
+	}
+	
+	function generateAnimationFile(animation) {
+		const result = {
+			type: "json",
+			animations: [],
+			id: animation.name.toLowerCase(),
+			length: animation.length
+		};
+        if (animation.loop == "loop") {
+            result.looping = true;
+        }
+        for (const id in animation.animators) {
+            const boneAnimator = animation.animators[id];
+            if (!(boneAnimator instanceof BoneAnimator)) continue;
+            if (boneAnimator.position.length) {
+                result.animations.push(generateAnimation(boneAnimator.name, "position", boneAnimator.position));
+            }
+            if (boneAnimator.rotation.length) {
+                result.animations.push(generateAnimation(boneAnimator.name, "rotation", boneAnimator.rotation));
+            }
+            if (boneAnimator.scale.length) {
+                result.animations.push(generateAnimation(boneAnimator.name, "scale", boneAnimator.scale));
+            }
+        }
+		return result;
+	}
+	
+	function generateAnimation(bone, target, keyframes) {
+		const animation = {
+			bone: bone,
+			keyframes: [],
+			target: target
+		}
+		
+		for (const keyframe of [...keyframes].sort((a, b) => a.time - b.time)) {
+			animation.keyframes.push({
+				degree_vec: {
+					x: keyframe.get("x"),
+					y: keyframe.get("y"),
+					z: keyframe.get("z")
+				},
+				interpolation: keyframe.interpolation,
+				timestamp: keyframe.time
+			});
+		}
+		
+		return animation;
 	}
 })();
