@@ -1,5 +1,6 @@
 (function () {
     let exportModelButton;
+    let importModelButton;
 	let exportAnimationButton;
 	
 	Plugin.register("flf_exporter", {
@@ -43,13 +44,31 @@
 					});
 				}
 			});
+			importModelButton = new Action("import_flf", {
+				name: "Import FLF",
+				description: "Imports FLF format json models",
+				icon: "fa-file-import",
+				click() {
+					Blockbench.import({
+						type: "FLF Json",
+						extensions: ["json"],
+						readtype: "text"
+					}, (files) => {
+						loadModelFile(JSON.parse(files[0].content))
+					});
+				}
+			});
 			
 			MenuBar.addAction(exportModelButton, "file.export");
 			MenuBar.addAction(exportAnimationButton, "file.export");
+			
+			MenuBar.addAction(importModelButton, "file.import")
 		},
 		onunload() {
 			exportModelButton.delete();
 			exportAnimationButton.delete();
+			
+			importModelButton.delete();
 		}
 	});
 	
@@ -177,5 +196,71 @@
 		}
 		
 		return animation;
+	}
+	
+	function loadModelFile(json) {
+		Project.name = json.model_id.replace(":", "_");
+		Project.texture_width = json.texture_width;
+		Project.texture_height = json.texture_height;
+		
+		var groups = {};
+		
+		json.elements.forEach(element => loadGroups(element));
+		
+		Canvas.updateAll();
+	}
+	
+	function loadGroups(element) {
+		var groupData = {
+			name: element.id
+		};
+		
+		groupData.origin = [ element.poses.x, element.poses.y, element.poses.z ];
+		
+		var group = new Group(groupData);
+		
+		group.init();
+
+		element.boxes.forEach(box => loadCube(box, group));
+	
+		if(element.elements) {
+			element.elements.forEach(subElement => loadSubGroups(subElement, group));
+		}
+	}
+	
+	function loadSubGroups(element, parent) {
+		var groupData = {
+			name: element.id
+		};
+	
+		groupData.origin = [ element.poses.x, element.poses.y, element.poses.z ];
+	
+		var group = new Group(groupData);
+		
+		group.init();
+		
+		group.addTo(parent);
+
+		element.boxes.forEach(box => loadCube(box, group));
+		
+		if(element.elements) {
+			element.elements.forEach(subElement => loadSubGroups(subElement, group));
+		}
+	}
+	
+	function loadCube(box, parent) {
+		let xOrigin = parent.origin[0];
+		let zOrigin =  parent.origin[2];
+		let yOrigin = box.y_dimension + parent.origin[1];
+		var origin = [ xOrigin, zOrigin, yOrigin ];
+		
+		var cube = new Cube({
+			from: origin,
+			to: [ box.x_dimension, box.y_dimension, box.z_dimension ],
+			uv_offset: [ box.texture_x_offset, box.texture_y_offset ]
+		});
+		
+		cube.init();
+		cube.addTo(parent);
 	}
 })();
