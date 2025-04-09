@@ -54,8 +54,7 @@
 						type: "FLF Datagen",
 						extensions: ["txt"],
 						savetype: "text",
-						name: `${fileName}.txt`,
-						content: autoStringify(generateJavaAnimationFile())
+						content: generateJavaModelFile()
 					});
 				}
 			});
@@ -164,6 +163,76 @@
 		return element;
 	}
 	
+	function generateJavaModelFile() {
+		let output = `\nprivate static JsonModel.Builder createBodyLayer() {\nJsonModel.Builder builder = JsonModel.builder(${Project.texture_width}, ${Project.texture_height});`;
+		let allGroups = getAllGroups();
+		let looseCubes = [];
+		Cube.all.forEach(cube => {
+			if (cube.parent == 'root') looseCubes.push(cube)
+		})
+		if (looseCubes.length) {
+			let group = new Group({
+				name: 'bb_main'
+			});
+			group.is_catch_bone = true;
+			group.createUniqueName()
+			allGroups.push(group)
+			group.children.replace(looseCubes)
+		}
+		allGroups.slice().forEach(group => {
+			if(group.parent == "root") {
+				output += generateJavaElement(group, 0);
+			}
+		})
+		output += `\nreturn builder;\n}`
+		return output.replaceAll("66666666666", "67").replaceAll("33333333333", "34");
+	}
+	
+	function generateJavaElement(group, size) {
+		let output = "";
+		var origin = group.origin.slice();
+		if (group.parent instanceof Group) {
+			origin.V3_subtract(group.parent.origin)
+		}
+		origin[0] *= -1;
+		if (Project.modded_entity_flip_y) {
+			origin[1] *= -1;
+			if (group.parent instanceof Group === false) {
+				origin[1] += 24
+			}
+		}
+		if(size === 0) {
+			output += `\nbuilder.addOrReplaceChild("${group.name}", elementBuilder -> elementBuilder`;
+		} else {
+			output += `\n.addOrReplaceChild("${group.name}", subElement${size}Builder -> subElement${size}Builder`;
+			
+		}
+		for(let i = 0; i < group.children.length; ++i) {
+			var child = group.children[i];
+			if(child instanceof Cube) {
+				let xOrigin = group.origin[0] - child.to[0];
+				let yOrigin = -child.from[1] - child.size(1) + group.origin[1];
+				let zOrigin = child.from[2] - group.origin[2];
+				if (child.mirror_uv) {
+					output += `\n.addBox(${child.uv_offset[0]}, ${child.uv_offset[1]}, ${xOrigin}F, ${yOrigin}F, ${zOrigin}F, ${child.size(0, false)}F, ${child.size(1, false)}F, ${child.size(2, false)}F, true)`;
+				} else {
+					output += `\n.addBox(${child.uv_offset[0]}, ${child.uv_offset[1]}, ${xOrigin}F, ${yOrigin}F, ${zOrigin}F, ${child.size(0, false)}F, ${child.size(1, false)}F, ${child.size(2, false)}F)`;
+				}
+			}
+			if(child instanceof Group) {
+				let childOutput = "";
+				childOutput += generateJavaElement(child, size + 1);
+				output += childOutput;
+				output += `\n)`;
+			}
+		}
+		output += `.build(),\nJsonPose.offset(${origin[0]}F, ${origin[1]}F, ${origin[2]}F)`;
+		if(size === 0) {
+			output += `\n);`;
+		}
+		return output;
+	}
+	
 	function generateJsonAnimationFile(animation) {
 		const result = {
 			animation_channels: [],
@@ -243,7 +312,7 @@
 						output += `,\n\t\tJsonKeyframe.create(${keyFrame.time}F, ${round2(x)}F, ${round2(y)}F, ${round2(z)}F, "${keyFrame.interpolation}")`;
 					}
 					
-					output += "))";
+					output += ")";
 				}
 				
                 if (boneAnimator.rotation.length) {
@@ -260,7 +329,7 @@
 						output += `,\n\t\tJsonKeyframe.create(${keyFrame.time}F, ${round2(x)}F, ${round2(y)}F, ${round2(z)}F, "${keyFrame.interpolation}")`;
 					}
 					
-					output += "))";
+					output += ")";
 				}
 				
 				if (boneAnimator.scale.length) {
