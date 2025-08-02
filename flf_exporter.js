@@ -9,7 +9,7 @@
 		author: "Willatendo",
 		description: "Exports entity models into flf model format",
 		icon: "fa-cube",
-		version: "2.0.0",
+		version: "2.0.1",
 		variant: "both",
 		about: "This plugin exports your Blockbench entity models to be exported in flf model format and animations into fla.",
 		tags: ["Minecraft: Java Edition"],
@@ -156,7 +156,9 @@
 				}
 			}
 			if(child instanceof Group) {
-				element.elements = [];
+				if (element.elements == null) {
+					element.elements = [];
+				}
 				element.elements.push(generateElement(child));
 			}
 		}
