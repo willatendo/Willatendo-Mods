@@ -53,6 +53,12 @@ aside p {
 	float: right;
 }
 
+p {
+	line-height: 25px;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
 aside ul {
 	background-color: #29323d;
 	color: #dcdcdc;
@@ -90,4 +96,9 @@ section a:visited {
 	color: CadetBlue;
 	background-color: transparent;
 	text-decoration: none;
+}
+
+img {
+	float:right;
+	padding: 10px;
 }
