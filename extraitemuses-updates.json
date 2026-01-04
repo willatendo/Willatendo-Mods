@@ -1,7 +1,10 @@
 {
+	"homepage": "https://modrinth.com/mod/extra-item-uses",
+	"1.21.4": {
+	},
 	"promos": {
-		"1.21.4-latest": "3.0.0",
-		"1.21.4-recommended": "3.0.0",
+		"1.21.4-latest": "3.0.1",
+		"1.21.4-recommended": "3.0.1",
 		"1.20.4-latest": "2.0.0",
 		"1.20.4-recommended": "2.0.0",
 		"1.20.2-latest": "1.0.0",
