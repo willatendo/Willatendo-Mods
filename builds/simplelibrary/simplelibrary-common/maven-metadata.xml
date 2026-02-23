@@ -3,9 +3,10 @@
 	<groupId>simplelibrary</groupId>
 	<artifactId>simplelibrary-common</artifactId>
 	<versioning>
-		<latest>26.1-1.0.0-beta15</latest>
+		<latest>26.1-1.0.0-beta16</latest>
 		<release>6.2.0</release>
 		<versions>
+			<version>26.1-1.0.0-beta16<version>
 			<version>26.1-1.0.0-beta15<version>
 			<version>26.1-1.0.0-beta14<version>
 			<version>26.1-1.0.0-beta13<version>
