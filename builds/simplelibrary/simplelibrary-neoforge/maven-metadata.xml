@@ -3,9 +3,10 @@
 	<groupId>simplelibrary</groupId>
 	<artifactId>simplelibrary-neoforge</artifactId>
 	<versioning>
-		<latest>26.1-1.0.0-beta33</latest>
+		<latest>26.1-1.0.0-beta35</latest>
 		<release>6.2.0</release>
 		<versions>
+			<version>26.1-1.0.0-beta35</version>
 			<version>26.1-1.0.0-beta33</version>
 			<version>26.1-1.0.0-beta32</version>
 			<version>26.1-1.0.0-beta31</version>
