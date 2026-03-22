@@ -3,9 +3,10 @@
 	<groupId>simplelibrary</groupId>
 	<artifactId>simplelibrary-fabric</artifactId>
 	<versioning>
-		<latest>26.1-1.0.0-beta39</latest>
+		<latest>26.1-1.0.0-beta40</latest>
 		<release>6.2.0</release>
 		<versions>
+			<version>26.1-1.0.0-beta40</version>
 			<version>26.1-1.0.0-beta39</version>
 			<version>26.1-1.0.0-beta38</version>
 			<version>26.1-1.0.0-beta37</version>
